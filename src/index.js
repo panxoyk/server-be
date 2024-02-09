@@ -26,7 +26,21 @@ app.route('/login')
         const match = await bcrypt.compare(password, user.password)
         if (!match) return
         const session = jwt.sign({ email }, "holasecreto777")
-        res.send({ session })
+        res.json({ session })
+    })
+
+app.route('/profile')
+    .get(async (req, res) => {
+        try {
+            const token = JSON.parse(req.headers.auth)
+            if (!token) return
+            const payload = jwt.verify(token, "holasecreto777")
+            if (!payload) return
+            const user = await UserModel.findOne({ email: payload.email })
+            res.json({ email: user.email })
+        } catch (error) {
+            console.log(error)
+        }
     })
 
 app.listen(port, async () => {
