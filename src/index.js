@@ -13,35 +13,53 @@ app.use(express.json())
 app.use(cookieParser())
 app.use(cors())
 
+const error = (err, req, res, next) => {
+    console.log('Error', err.message)
+}
+
 app.route('/')
     .get((req, res) => {
         res.send('Welcome to server')
     })
 
 app.route('/login')
-    .post(async (req, res) => {
-        const { email, password } = JSON.parse(req.headers.login)
-        const user = await UserModel.findOne({ email })
-        if (!user) return
-        const match = await bcrypt.compare(password, user.password)
-        if (!match) return
-        const session = jwt.sign({ email }, "holasecreto777")
-        res.json({ session })
-    })
-
-app.route('/profile')
-    .get(async (req, res) => {
+    .post(async (req, res, next) => {
         try {
-            const token = JSON.parse(req.headers.auth)
-            if (!token) return
-            const payload = jwt.verify(token, "holasecreto777")
-            if (!payload) return
-            const user = await UserModel.findOne({ email: payload.email })
-            res.json({ email: user.email })
+            const { email, password } = JSON.parse(req.headers.login)
+            const user = await UserModel.findOne({ email })
+            const match = await bcrypt.compare(password, user.password)
+            if (!match) return
+            const session = jwt.sign({ email }, "holasecreto777")
+            res.json({ session })
         } catch (error) {
-            console.log(error)
+            next(error)
         }
     })
+
+const auth = (req, res, next) => {
+    try {
+        const token = JSON.parse(req.headers.auth)
+        const payload = jwt.verify(token, "holasecreto777")
+        req.headers.session = payload
+        next()
+    } catch (error) {
+        next(error)
+    }
+}
+
+app.route('/profile')
+    .get(auth, async (req, res, next) => {
+        try {
+            const { email } = req.headers.session
+            if (!email) return
+            const user = await UserModel.findOne({ email })
+            res.json({ email: user.email })
+        } catch (error) {
+            next(error)
+        }
+    })
+
+app.use(error)
 
 app.listen(port, async () => {
     console.log(`Server running on port ${port}`)
