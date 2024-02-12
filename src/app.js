@@ -3,8 +3,8 @@ import cors from 'cors'
 import cookieParser from 'cookie-parser'
 import jwt from 'jsonwebtoken'
 import bcrypt from 'bcrypt'
-import { UserModel } from './models/user'
-import { authMiddleware, errorMiddleware } from './middlewares'
+import { UserModel } from './models/user.js'
+import { authMiddleware, errorMiddleware } from './middlewares.js'
 
 const app = express()
 
