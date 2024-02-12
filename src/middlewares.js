@@ -1,5 +1,7 @@
+import jwt from 'jsonwebtoken'
+
 export const errorMiddleware = (err, req, res, next) => {
-    console.log('Error', err.message)
+    console.log('ERROR', err.message)
 }
 
 export const authMiddleware = (req, res, next) => {
