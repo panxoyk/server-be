@@ -1,4 +1,5 @@
 import jwt from 'jsonwebtoken'
+import { jwtKey } from './config.js'
 
 export const errorMiddleware = (err, req, res, next) => {
     console.log('ERROR', err.message)
@@ -7,8 +8,8 @@ export const errorMiddleware = (err, req, res, next) => {
 
 export const authMiddleware = (req, res, next) => {
     try {
-        const token = JSON.parse(req.headers.auth)
-        const payload = jwt.verify(token, "holasecreto777")
+        const token = req.headers.auth
+        const payload = jwt.verify(token, jwtKey)
         req.headers.session = payload
         next()
     } catch (error) {
