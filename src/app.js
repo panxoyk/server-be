@@ -17,13 +17,21 @@ app.route('/')
         res.send('Welcome to server')
     })
 
-app.route('/login')
+app.route('/auth/login')
     .post(async (req, res, next) => {
         try {
             const { email, password } = JSON.parse(req.headers.login)
+            // const { email, password } = req.body //POSTMAN
             const user = await UserModel.findOne({ email })
+            if (!user) {
+                next(new Error('Invalid email or password'))
+                return
+            }
             const match = await bcrypt.compare(password, user.password)
-            if (!match) return
+            if (!match) {
+                next(new Error('Invalid email or password'))
+                return
+            }
             const session = jwt.sign({ email }, "holasecreto777")
             res.json({ session })
         } catch (error) {
@@ -35,7 +43,6 @@ app.route('/profile')
     .get(authMiddleware, async (req, res, next) => {
         try {
             const { email } = req.headers.session
-            if (!email) return
             const user = await UserModel.findOne({ email })
             res.json({ email: user.email })
         } catch (error) {
