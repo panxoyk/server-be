@@ -3,7 +3,7 @@ import { jwtKey } from './config.js'
 import { AuthModel } from './models/auth.model.js'
 
 export const errorMiddleware = (err, req, res, next) => {
-    console.log('ERROR', err.message)
+    console.log('ERROR:', err.message)
     res.status(500).json({ message: err.message })
 }
 
