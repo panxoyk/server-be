@@ -1,6 +1,5 @@
 import jwt from 'jsonwebtoken'
 import { jwtKey } from './config.js'
-import { AuthModel } from './models/auth.model.js'
 
 export const errorMiddleware = (err, req, res, next) => {
     console.log('ERROR:', err.message)
@@ -21,12 +20,8 @@ export const authMiddleware = (req, res, next) => {
 export const tokenMiddleware = async (req, res, next) => {
     try {
         const tokenReq = req.headers.token
-        const { email } = jwt.verify(tokenReq, jwtKey.token)
-        const auth = await AuthModel.findOne({ email })
-        if (!(auth.token === tokenReq)) {
-            next(new Error('User unauthenticated'))
-            return
-        }
+        const payload = jwt.verify(tokenReq, jwtKey.token)
+        req.headers.login = payload
         next()
     } catch (error) {
         next(error)
