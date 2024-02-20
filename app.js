@@ -1,7 +1,7 @@
 import express, { json } from 'express'
 import cors from 'cors'
 import cookieParser from 'cookie-parser'
-import { tokenMiddleware, authMiddleware, errorMiddleware } from './middlewares.js'
+import { tokenMiddleware, authMiddleware, errorMiddleware, loginValidator } from './middlewares.js'
 import { login, token } from './controllers/auth.controller.js'
 import { getProfile } from './controllers/profile.controller.js'
 
@@ -13,9 +13,9 @@ app.use(cookieParser())
 
 app.route('/auth/token').post(token)
 
-app.route('/auth/login').post(tokenMiddleware, login)
+app.route('/auth/login').post([tokenMiddleware, loginValidator], login)
 
-app.route('/profile').get(authMiddleware, getProfile)
+app.route('/profile').get([authMiddleware], getProfile)
 
 app.use(errorMiddleware)
 
