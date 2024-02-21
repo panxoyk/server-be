@@ -2,12 +2,14 @@ import { config } from "dotenv";
 
 config()
 
-export const port = process.env.PORT
+export const port = Number(process.env.PORT)
 
 export const jwtKey = {
     token: process.env.TOKEN_KEY,
     auth: process.env.AUTH_KEY
 }
+
+export const authExpires = Number(process.env.KEY_EXP)
 
 export const mongo = {
     user: process.env.MONGO_USER,
