@@ -3,8 +3,9 @@ import { body, validationResult } from 'express-validator'
 import { jwtKey } from './config.js'
 
 export const errorHandler = (err, _req, res, _next) => {
-    console.log('ERROR:', err.message)
-    res.status(500).json({ message: err.message })
+    const message = err.message
+    console.log('ERROR:', message)
+    res.status(500).json({ message })
 }
 
 export const tokenMiddleware = async (req, _res, next) => {
@@ -40,3 +41,16 @@ export const loginValidator = [
         next()
     }
 ]
+
+export const notFound = (_req, res, _next) => {
+    const message = 'endpoint not found'
+    console.log('ERROR:', message)
+    res.status(404).json({ message })
+}
+
+export const logRequest = (req, _res, next) => {
+    console.log('-----')
+    console.log(req.method, req.url, 'at', new Date().toLocaleTimeString())
+    next()
+}
+

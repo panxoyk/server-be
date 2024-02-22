@@ -4,7 +4,7 @@ export const getProfile = async (req, res, next) => {
     try {
         const { email } = req.headers.session
         const user = await UserModel.findOne({ email })
-        res.json({ email: user.email })
+        res.json({ name: user.name, email: user.email })
     } catch (error) {
         next(error)
     }
