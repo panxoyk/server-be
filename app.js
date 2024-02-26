@@ -13,9 +13,9 @@ app.use(cookieParser())
 
 app.use(logRequest)
 
-app.route('/auth/access').post(access)
-app.route('/auth/login').post([tokenMiddleware, loginValidator], login)
-app.route('/profile').get([authMiddleware], getProfile)
+app.post('/auth/access', access)
+app.post('/auth/login', [tokenMiddleware, loginValidator], login)
+app.get('/profile', [authMiddleware], getProfile)
 
 app.use(notFound)
 app.use(errorHandler)

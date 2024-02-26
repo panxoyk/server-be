@@ -4,7 +4,7 @@ import { jwtKey } from './config.js'
 
 export const errorHandler = (err, _req, res, _next) => {
     const message = err.message
-    console.log('ERROR:', message)
+    console.error('ERROR:', message)
     res.status(500).json({ message })
 }
 
